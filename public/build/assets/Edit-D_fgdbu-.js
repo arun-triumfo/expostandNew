@@ -1,0 +1,1 @@
+import{j as r}from"./app-B2CkbV9q.js";import o from"./CityForm-CDVk6YtV.js";import"./AdminCKEditor4-BKJbFFxR.js";import"./AdminSearchableSelect-B9FlL_ed.js";import"./react-select.esm-C0dUegnV.js";import"./AdminLayout-BBX0g8NP.js";function n(t){return r.jsx(o,{...t})}export{n as default};

@@ -1,0 +1,1 @@
+function u(s,a){const e=s??{},r=e.meta??e,t=Number(r?.current_page??e.current_page??1),n=Number(r?.per_page??e.per_page??15),c=Number.isFinite(t)?t:1,p=Number.isFinite(n)?n:15;return(c-1)*p+a+1}export{u as s};
