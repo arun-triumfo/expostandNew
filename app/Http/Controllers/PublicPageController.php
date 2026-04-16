@@ -1,0 +1,327 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Article;
+use App\Models\CityTable;
+use App\Models\CountryTable;
+use App\Models\StandbuilderMaster;
+use App\Models\TradeshowData;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Inertia\Inertia;
+use Inertia\Response;
+
+class PublicPageController extends Controller
+{
+    public function blogIndex(): Response
+    {
+        $blogs = Article::query()
+            ->where('status', '1')
+            ->orderByDesc('id')
+            ->paginate(12)
+            ->through(fn ($row) => [
+                'id' => (int) $row->id,
+                'title' => (string) ($row->blog_tilte ?? ''),
+                'slug' => (string) ($row->url ?? ''),
+                'description' => (string) ($row->description ?? ''),
+                'image' => (string) ($row->blog_img ?? ''),
+                'created_date' => (string) ($row->created_date ?? ''),
+            ]);
+
+        return Inertia::render('Public/Blog/Index', [
+            'blogs' => $blogs,
+        ]);
+    }
+
+    public function blogShow(string $slug): Response
+    {
+        $blog = Article::query()->where('url', $slug)->where('status', '1')->firstOrFail();
+
+        $relatedLimit = max(3, (int) ($blog->bloglimit ?? 6));
+        $related = Article::query()
+            ->where('status', '1')
+            ->where('id', '!=', $blog->id)
+            ->orderByDesc('id')
+            ->limit($relatedLimit)
+            ->get()
+            ->map(fn ($row) => [
+                'title' => (string) ($row->blog_tilte ?? ''),
+                'slug' => (string) ($row->url ?? ''),
+                'image' => (string) ($row->blog_img ?? ''),
+            ])
+            ->values();
+
+        return Inertia::render('Public/Blog/Show', [
+            'blog' => [
+                'id' => (int) $blog->id,
+                'title' => (string) ($blog->blog_tilte ?? ''),
+                'slug' => (string) ($blog->url ?? ''),
+                'description' => (string) ($blog->description ?? ''),
+                'image' => (string) ($blog->blog_img ?? ''),
+                'meta_title' => (string) ($blog->meta_title ?? ''),
+                'meta_desc' => (string) ($blog->meta_description ?? ''),
+                'created_date' => (string) ($blog->created_date ?? ''),
+            ],
+            'related' => $related,
+        ]);
+    }
+
+    public function tradeShows(Request $request): Response
+    {
+        $search = trim((string) $request->query('search', ''));
+        $today = now()->toDateString();
+
+        $query = TradeshowData::query()
+            ->leftJoin('countrytables', 'tradeshow_data.fair_country', '=', 'countrytables.id')
+            ->leftJoin('citytables', 'tradeshow_data.fair_city', '=', 'citytables.id')
+            ->where('tradeshow_data.status', 'active')
+            ->where('tradeshow_data.fair_start_date', '>=', $today)
+            ->select(
+                'tradeshow_data.id',
+                'tradeshow_data.fair_name',
+                'tradeshow_data.fair_logo',
+                'tradeshow_data.logo_alt',
+                'tradeshow_data.fair_start_date',
+                'tradeshow_data.fair_end_date',
+                'tradeshow_data.slug',
+                'countrytables.name as countryname',
+                'citytables.name as cityname'
+            )
+            ->orderBy('tradeshow_data.fair_start_date');
+
+        if ($search !== '') {
+            $query->where('tradeshow_data.fair_name', 'like', '%'.$search.'%');
+        }
+
+        $tradeshows = $query->paginate(15)->withQueryString();
+
+        return Inertia::render('Public/TradeShows/Index', [
+            'tradeshows' => $tradeshows,
+            'filters' => ['search' => $search],
+        ]);
+    }
+
+    public function tradeShowDetail(string $slug): Response
+    {
+        $row = TradeshowData::query()
+            ->leftJoin('countrytables', 'tradeshow_data.fair_country', '=', 'countrytables.id')
+            ->leftJoin('citytables', 'tradeshow_data.fair_city', '=', 'citytables.id')
+            ->select(
+                'tradeshow_data.id',
+                'tradeshow_data.fair_name',
+                'tradeshow_data.fair_logo',
+                'tradeshow_data.logo_alt',
+                'tradeshow_data.fair_start_date',
+                'tradeshow_data.fair_end_date',
+                'tradeshow_data.slug',
+                'tradeshow_data.meta_title',
+                'tradeshow_data.meta_desc',
+                'tradeshow_data.fair_details',
+                'tradeshow_data.fair_website',
+                'tradeshow_data.contact_email',
+                'countrytables.name as countryname',
+                'citytables.name as cityname'
+            )
+            ->where('tradeshow_data.slug', $slug)
+            ->firstOrFail();
+
+        return Inertia::render('Public/TradeShows/Show', [
+            'tradeshow' => [
+                'id' => (int) $row->id,
+                'name' => (string) ($row->fair_name ?? ''),
+                'slug' => (string) ($row->slug ?? ''),
+                'logo' => (string) ($row->fair_logo ?? ''),
+                'logo_alt' => (string) ($row->logo_alt ?? ''),
+                'start_date' => (string) ($row->fair_start_date ?? ''),
+                'end_date' => (string) ($row->fair_end_date ?? ''),
+                'meta_title' => (string) ($row->meta_title ?? ''),
+                'meta_desc' => (string) ($row->meta_desc ?? ''),
+                'details' => (string) ($row->fair_details ?? ''),
+                'website' => (string) ($row->fair_website ?? ''),
+                'contact_email' => (string) ($row->contact_email ?? ''),
+                'countryname' => (string) ($row->countryname ?? ''),
+                'cityname' => (string) ($row->cityname ?? ''),
+            ],
+        ]);
+    }
+
+    public function cityPage(string $country, string $city): Response
+    {
+        $countryRow = CountryTable::query()->where('value', $country)->firstOrFail();
+        $cityRow = CityTable::query()->where('value', $city)->where('countryid', $countryRow->id)->firstOrFail();
+
+        $nearbyCities = CityTable::query()
+            ->where('countryid', $countryRow->id)
+            ->where('id', '!=', $cityRow->id)
+            ->where('status', '1')
+            ->limit(10)
+            ->get(['name', 'value'])
+            ->map(fn ($r) => ['name' => (string) $r->name, 'value' => (string) $r->value])
+            ->values();
+
+        $citySelectedIds = array_values(array_filter(array_map('intval', explode(',', (string) ($cityRow->show_standbuilder_ids ?? '')))));
+        $standbuilders = empty($citySelectedIds)
+            ? $this->standbuildersBaseQuery()
+                ->where('standbuildermasters.cityname', $cityRow->name)
+                ->limit(24)
+                ->get()
+                ->map(fn ($r) => $this->mapStandbuilderCard($r))
+                ->values()
+            : $this->selectedStandbuilders($citySelectedIds);
+
+        return Inertia::render('Public/City/Show', [
+            'country' => [
+                'name' => (string) ($countryRow->name ?? ''),
+                'value' => (string) ($countryRow->value ?? ''),
+            ],
+            'city' => [
+                'name' => (string) ($cityRow->name ?? ''),
+                'value' => (string) ($cityRow->value ?? ''),
+                'metatitle' => (string) ($cityRow->metatitle ?? ''),
+                'metadesc' => (string) ($cityRow->metadesc ?? ''),
+                'bannertitle' => (string) ($cityRow->bannertitle ?? ''),
+                'bannershrtext' => (string) ($cityRow->bannershrtext ?? ''),
+                'topdesc' => (string) ($cityRow->topdesc ?? ''),
+                'botdesc' => (string) ($cityRow->botdesc ?? ''),
+            ],
+            'nearbyCities' => $nearbyCities,
+            'standbuilders' => $standbuilders,
+        ]);
+    }
+
+    public function countryOrProvider(string $slug): Response
+    {
+        $country = CountryTable::query()->where('value', $slug)->first();
+        if ($country) {
+            $cities = CityTable::query()
+                ->where('countryid', $country->id)
+                ->where('displypage', 'city')
+                ->get(['name', 'value'])
+                ->map(fn ($r) => ['name' => (string) $r->name, 'value' => (string) $r->value])
+                ->values();
+
+            $standbuilders = $this->standbuildersBaseQuery()
+                ->where('standbuildermasters.countryname', $country->name);
+            $countrySelectedIds = array_values(array_filter(array_map('intval', explode(',', (string) ($country->show_standbuilder_ids ?? '')))));
+            $standbuilders = empty($countrySelectedIds)
+                ? $standbuilders->limit(24)->get()->map(fn ($r) => $this->mapStandbuilderCard($r))->values()
+                : $this->selectedStandbuilders($countrySelectedIds);
+
+            return Inertia::render('Public/Country/Show', [
+                'country' => [
+                    'name' => (string) ($country->name ?? ''),
+                    'value' => (string) ($country->value ?? ''),
+                    'metatitle' => (string) ($country->metatitle ?? ''),
+                    'metadesc' => (string) ($country->metadesc ?? ''),
+                    'bannertitle' => (string) ($country->bannertitle ?? ''),
+                    'bannershrtext' => (string) ($country->bannershrtext ?? ''),
+                    'topdesc' => (string) ($country->topdesc ?? ''),
+                    'botdesc' => (string) ($country->botdesc ?? ''),
+                ],
+                'cities' => $cities,
+                'standbuilders' => $standbuilders,
+            ]);
+        }
+
+        $provider = StandbuilderMaster::query()
+            ->leftJoin('usermasters', 'standbuildermasters.userid', '=', 'usermasters.id')
+            ->where('standbuildermasters.slug', $slug)
+            ->where('usermasters.status', '1')
+            ->select(
+                'standbuildermasters.*',
+                'usermasters.name as username',
+                'usermasters.email',
+                'usermasters.phone'
+            )
+            ->firstOrFail();
+
+        $servicesMap = DB::table('servicemasters')->where('status', '1')->pluck('name', 'id');
+        $countryMap = CountryTable::query()->where('status', '1')->pluck('name', 'id');
+
+        $serviceIds = array_filter(array_map('intval', explode(',', (string) ($provider->servic_id ?? ''))));
+        $scopeIds = array_filter(array_map('intval', explode(',', (string) ($provider->busn_scop_country ?? ''))));
+
+        return Inertia::render('Public/StandBuilders/Show', [
+            'standbuilder' => [
+                'companyname' => (string) ($provider->companyname ?? ''),
+                'slug' => (string) ($provider->slug ?? ''),
+                'complogo' => (string) ($provider->complogo ?? ''),
+                'ownername' => (string) ($provider->ownername ?? ''),
+                'compweb' => (string) ($provider->compweb ?? ''),
+                'countryname' => (string) ($provider->countryname ?? ''),
+                'cityname' => (string) ($provider->cityname ?? ''),
+                'about_comp' => (string) ($provider->about_comp ?? ''),
+                'packgaename' => (string) ($provider->packgaename ?? ''),
+                'pack_color' => (string) ($provider->pack_color ?? ''),
+                'found_year' => (string) ($provider->found_year ?? ''),
+                'metatitle' => (string) ($provider->metatitle ?? ''),
+                'metadesc' => (string) ($provider->metadesc ?? ''),
+                'email' => (string) ($provider->email ?? ''),
+                'phone' => (string) ($provider->phone ?? ''),
+                'services' => collect($serviceIds)->map(fn ($id) => $servicesMap[$id] ?? null)->filter()->values(),
+                'business_scope_countries' => collect($scopeIds)->map(fn ($id) => $countryMap[$id] ?? null)->filter()->values(),
+            ],
+        ]);
+    }
+
+    private function standbuildersBaseQuery()
+    {
+        return StandbuilderMaster::query()
+            ->leftJoin('usermasters', 'standbuildermasters.userid', '=', 'usermasters.id')
+            ->where('usermasters.status', '1')
+            ->where('standbuildermasters.about_comp', '!=', '')
+            ->whereIn('standbuildermasters.packgaename', ['PLATINUM', 'GOLD', 'SILVER', 'STARTER', 'FREE'])
+            ->select(
+                'standbuildermasters.id',
+                'standbuildermasters.companyname',
+                'standbuildermasters.complogo',
+                'standbuildermasters.packgaename',
+                'standbuildermasters.pack_color',
+                'standbuildermasters.countryname',
+                'standbuildermasters.cityname',
+                'standbuildermasters.about_comp',
+                'standbuildermasters.slug'
+            )
+            ->orderByRaw("CASE
+                WHEN standbuildermasters.packgaename = 'PLATINUM' THEN 1
+                WHEN standbuildermasters.packgaename = 'GOLD' THEN 2
+                WHEN standbuildermasters.packgaename = 'SILVER' THEN 3
+                WHEN standbuildermasters.packgaename = 'STARTER' THEN 4
+                ELSE 5
+            END")
+            ->orderByDesc('standbuildermasters.id');
+    }
+
+    private function mapStandbuilderCard(object $row): array
+    {
+        return [
+            'id' => (int) ($row->id ?? 0),
+            'companyname' => (string) ($row->companyname ?? ''),
+            'complogo' => (string) ($row->complogo ?? ''),
+            'packgaename' => (string) ($row->packgaename ?? ''),
+            'pack_color' => (string) ($row->pack_color ?? ''),
+            'countryname' => (string) ($row->countryname ?? ''),
+            'cityname' => (string) ($row->cityname ?? ''),
+            'about_comp' => (string) ($row->about_comp ?? ''),
+            'slug' => (string) ($row->slug ?? ''),
+        ];
+    }
+
+    private function selectedStandbuilders(array $ids)
+    {
+        if (empty($ids)) {
+            return collect();
+        }
+
+        $order = implode(',', $ids);
+
+        return $this->standbuildersBaseQuery()
+            ->whereIn('standbuildermasters.id', $ids)
+            ->orderByRaw("FIELD(standbuildermasters.id, {$order})")
+            ->get()
+            ->map(fn ($r) => $this->mapStandbuilderCard($r))
+            ->values();
+    }
+}
+

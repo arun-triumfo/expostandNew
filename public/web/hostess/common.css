@@ -1,0 +1,392 @@
+@charset "UTF-8";
+@font-face {
+    font-display: swap
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box
+}
+
+* {
+    margin: 0;
+    padding: 0
+}
+
+html,
+body,
+header,
+footer,
+nav,
+aside,
+figure,
+figcaption,
+hgroup,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+ul,
+li,
+ol,
+p,
+div,
+strong,
+span,
+aside,
+main {
+    margin: 0;
+    padding: 0
+}
+
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+    font-display: optional;
+    font-family: 'Poppins', Arial, Helvetica, sans-serif;
+    overflow-x: hidden;
+    font-size: 1rem;
+    line-height: 1.6;
+    font-weight: 400;
+    background: #fff
+}
+
+ol,
+ul,
+li {
+    list-style: none
+}
+
+img {
+    max-width: 100%
+}
+
+a,
+a:hover {
+    text-decoration: none;
+    color: #1553fc
+}
+.topheader{
+    display: block;
+    width: 100%;
+    position: relative;
+    padding: 0;
+    background: #343642;
+}
+.topheader::after{
+    content: '';
+    display: block;
+    clear: both;
+}
+.logo{
+    display: block;
+    width: 192px;
+    float: left;
+    margin:5px 28px 5px 0;
+}
+.logo img{
+    display: block;
+    width: 100%;
+    height: auto;
+}
+.infocontainer{
+    display: inline-block;
+    max-width: calc(100% - 220px);
+    float: right;
+    font-family: "Roboto Condensed", Arial, Helvetica, sans-serif;
+}
+
+.loginbtnbg{
+    display: inline-block;
+    float: left;}
+
+.loginbtnbg ul li{
+    display: inline-block;
+    float: left;
+    border-left: 1px solid rgba(255,255,255,0.6);
+    border-right: 1px solid rgba(255,255,255,0.6);
+}
+.loginbtnbg ul li:last-child{
+    border-left: none;
+}
+.loginbtnbg ul li a{
+    display: inline-block;
+    padding: 5px 15px;
+    line-height: 62px;
+    color: #fff;
+    font-size: 1rem;;
+}
+.loginbtnbg ul li a span{
+    display: inline-block;
+    width: 24px;
+}
+.loginbtnbg ul li a span img{
+    width: 100%;
+    height: auto;
+}
+.phonecontainer{
+    display: inline-block;
+    float: left;
+    margin-right: 2rem;
+    padding: 23px 0;
+}
+.phonecontainer ul{
+
+}
+.phonecontainer ul li{
+    display: inline-block;
+    float: left;
+    position: relative;
+}
+.phonecontainer ul li:first-child::after{
+    content: '';
+    position: absolute;
+    right: 0;
+    top:4px;
+    width: 1px;
+    height: 17px;
+    background:#fff;
+}
+.phonecontainer ul li a{
+    display: inline-block;
+    padding: 0px 15px;
+    font-size: 1rem;
+    line-height: 1;
+    color: #fff;;
+}
+.navigationbg{
+    display: block;
+    width: 100%;
+    background:#fff;
+    line-height: 0;
+    position: relative;
+    text-align: center;
+    font-family: "Roboto Condensed", Arial, Helvetica, sans-serif;
+}
+.navigationbg::after{
+    content: '';
+    display: block;
+    clear: both;
+}
+.widthmedium{
+    display: block;
+    width: 991px;
+    max-width: 100%;
+    position: relative;
+    margin:0 auto;
+}
+.widthsmall{
+    display: block;
+    width: 767px;
+    max-width: 100%;
+    position: relative;
+    margin:0 auto;
+}
+.shrtdesc{
+    display: block;
+    width: 100%;
+    position: relative;
+}
+.shrtdesc p{
+    display: block;
+    font-size: 1rem;
+    line-height: 1.7;
+    color: #3d3d3d;
+    margin-bottom: 1rem;
+}
+.widthmedium::after,
+.widthsmall::after,
+.shrtdesc::after{
+    content: '';
+    display: block;
+    clear: both;
+}
+.maintitle{
+    display: block;
+    font-size: 2.2rem;
+    line-height: 1.2;
+    color: #414141;
+    margin:0 0 1rem;
+    font-weight: 700;
+    font-family: "Roboto Condensed", Arial, Helvetica, sans-serif;
+}
+.maintitle span{
+    color: #AE1B2C;
+}
+.shrtdesc{
+    display: block;
+    width: 100%;
+    position: relative;
+}
+.shrtdesc p{
+    display: block;
+    font-size: 1rem;
+    line-height: 1.8;
+    color: #3d3d3d;
+    margin-bottom: 1rem;
+}
+.footer{
+    display: block;
+    width: 100%;
+    background: #041625;
+    padding: 60px 0;
+}
+.footer .toptitle{
+    display: block;
+    width: 100%;
+    text-align: center;
+    padding-bottom: 1rem;
+    margin-bottom: 1.5rem;
+    color: #fff;
+    border-bottom: 1px dashed #364a5a;
+    font-size: 1.2rem;
+    font-weight: 500;
+}
+.footer .ftitle{
+    display: block;
+    font-size: 1.2rem;
+    line-height: 1.2;
+    margin-bottom: 1rem;
+    color: #fff;
+    font-weight: 700;
+    font-family: "Roboto Condensed", Arial, Helvetica, sans-serif;
+}
+.footer .fmenu{
+    display: block;
+    width: 100%;
+    border-right: 1px dashed #364a5a;
+}
+.borrightnone{
+    border-right: 0 !important;
+}
+.footer .fmenu ul{}
+.footer .fmenu ul li{
+    display: block;
+}
+.footer .fmenu ul li a{
+    color: #e1dff3;
+    font-size: 13px;
+    line-height: 2.5;
+    display: block;
+}
+.colums-2 {
+    columns: 2;
+}
+.footer .contactfooter{
+    display: block;
+    margin-top: 2rem;
+    position: relative;
+}
+.footer .contactfooter::after{
+    content: '';
+    display: block;
+    clear: both;
+}
+.footer .contactfooter P{
+    color: #e1dff3;
+    font-size: 13px;
+    line-height: 2.5;
+    display: block;
+}
+.footer .contactfooter P a{
+    color: #fff;
+    font-size: 13px;
+    line-height: 2.5;
+}
+
+.footer .contactfooter ul{
+    display: flex;
+    gap: 1rem;
+}
+.footer .contactfooter ul li{
+    display: block;
+}
+.footer .contactfooter ul li a{
+    color: #e1dff3;
+    font-size: 13px;
+    line-height: 2.5;
+    display: block;
+}
+.footer .contactfooter ul li img{
+    border-radius: 50%;
+}
+.footer .contactfooter .figure{
+    display: block;
+    text-align: center;
+}
+
+.footer .contactfooter .figure img{
+    width: auto;
+    max-width: 100%;
+    height: auto;
+}
+
+.copyrightbg{
+    display: block;
+    width: 100%;
+    position: relative;
+    background: #AE1B2C;
+    text-align: center;
+    font-size: 0.9rem;
+    line-height: 1.2;
+    padding: 15px 0;
+    color: #fff;
+}
+
+.copyrightbg a{
+     font-size: 1rem;
+    color: #fff;
+    font-weight: 500;
+}
+
+/*for dassboard */
+
+.profile-box {
+  margin : 0px;
+}
+.profile-box ul {
+  display : flex;
+  justify-content : space-between;
+  flex-wrap : wrap;
+}
+.profile-box ul li {
+  display : flex;
+}
+.profile-box ul li p {
+  font-size : 16px;
+  color : #171213;
+  line-height:44px;
+  text-align : left;
+}
+.profile-box ul li p a {
+  color : #171213;
+}
+.profile-box ul li p a.active {
+  color : #e12349 !important;
+}
+.profile-box ul li span {
+  padding: 0px;
+  margin: 9px 10px;
+}
+.profile-pik-box {
+  width : 100%;
+  margin : 0px; padding : 0px;
+}
+
+/*end of here  dassboard */
+
+@media (max-width:767px){
+
+.maintitle{ font-size:1.6rem; }
+.sectiontop{ padding:40px 0px; }
+.footer .ftitle{  font-size:1rem;}
+.footer .contactfooter{ margin:10px 0px;}
+.footer{ padding: 30px 0px;} 
+.footer .toptitle{  font-size:1rem;} 
+
+}

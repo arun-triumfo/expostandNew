@@ -1,0 +1,281 @@
+.logincontainer{
+    display: block;
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+.logincontainer::after{
+    content: '';
+    display: block;
+    clear: both;
+}
+.logincontainer .container{
+    position: relative;
+    height: 100%;
+}
+.loginmainbg{
+    display: block;
+    width: 100%;
+    position: relative;
+    background: #F8F8F8;
+    border-radius: 25px;
+    border:6px solid #fff;
+    padding: 2rem;
+    
+}
+.loginmainbg::after{
+    content: '';
+    display: block;
+    clear: both;
+}
+.loginbg{
+    display: block;
+    width: 100%;
+    position: relative;
+    border-radius: 12px;
+    background: url(../images/homebanner.webp) no-repeat center center;
+    background-size: cover;
+    box-sizing: border-box;
+    padding: 2rem 1rem;
+    
+}
+.loginbg::after{
+    content: '';
+    display: block;
+    clear: both;
+}
+.loginbg::before{
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgb(0,0,0);
+    background: linear-gradient(180deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 96%);
+     border-radius: 12px;
+}
+.innerlogin{
+    display: block;
+    position: relative;
+    z-index: 1;
+}
+.maintitle{
+    display: block;
+    font-size: 2rem;
+    color: #fff;
+    line-height: 1.2;
+    margin-bottom: 1rem;
+    font-family: "Roboto Condensed", Arial, Helvetica, sans-serif;
+    font-weight: 600;
+    text-align: center;
+}
+.bgwhitebg{
+    display: block;
+    width: 380px;
+    max-width: 100%;
+    position: relative;
+    margin: 0 auto;
+}
+.bgwhitebg::after{
+   content: '';
+    display: block;
+    clear: both; 
+}
+.bgwhitebg .topbg{
+    display: block;
+    width: 100%;
+    background: #fff;
+    border-radius: 10px 10px 0 0;
+    margin: 0;
+    box-sizing: border-box;
+    padding: 1rem 2rem 0;
+    min-height: 200px;
+    line-height: 0;
+}
+.bgwhitebg .bottombg{
+    display: block;
+    width: 100%;
+    background: transparent;
+    border-radius: 0 0 10px 10px;
+    margin: 0;
+    box-sizing: border-box;
+    border:30px solid #fff;
+    min-height: 130px;
+    line-height: 0;
+    position: relative;
+}
+.bgwhitebg .bottombg::after{
+    content: '';
+    display: block;
+    position: absolute;
+    width: 100%;
+     height: calc(100% + 5px);
+    border-radius: 16px;
+    border:5px solid #fff;
+    bottom: -1px;
+}
+.bgwhitebg .bottombg::before{
+    content: '';
+    display: block;
+    position: absolute;
+    border-radius: 0px;
+    border:5px solid #fff;
+    height: calc(100% + 5px);
+    width: 100%;
+    top: -4px;
+}
+.title{
+    display: block;
+    font-size: 1.2rem;
+    font-weight: 600;
+    line-height: 1.2;
+    color: #000;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+.bgwhitebg label {
+    position: relative;
+    bottom: -16px;
+    color: #000;
+    font-size: 16px;
+    line-height: 1em;
+    font-weight: 400;
+    margin-left: 10px;
+    padding-right: 12px;
+    padding-left: 10px;
+    background-color: #fff;
+    z-index: 3;
+    text-align: left;
+}
+.input-outer {
+    position: relative;
+}
+.bgwhitebg input[type='text'],
+.bgwhitebg input[type='password'] {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 52px;
+    line-height: 32px;
+    font-size: 16px;
+    font-weight: 400;
+    padding: 8px 15px;
+    margin-bottom: 0;
+    border-radius: 5px;
+    color: #414141;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    background-color: #fff;
+    -webkit-transition: all 300ms ease;
+    transition: all 300ms ease;
+    margin-bottom: 0.5rem;
+}
+.rememberme{
+    display: flex;
+    align-items: center;
+    list-style: none;
+    height: 40px;
+    cursor: pointer;
+    transition: 0.3s;
+    padding: 0 2px;
+    border-radius: 8px;
+}
+input[type="checkbox"] {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 16px;
+  width: 16px;
+  border-radius: 1px;
+  margin-right: 12px;
+  border: 1px solid #2E8599;
+  transition: all 0.3s ease-in-out;
+}
+
+input[type="checkbox"]:checked {
+  background-color: #2E8599 !important;
+  color: #ffffff !important;
+}
+
+input[type="checkbox"]:after {
+  box-shadow: none !important;
+}
+input[type='submit']{
+    display: block;
+    width: 100%;
+    background: #2264AF;
+    box-sizing: border-box;
+    padding: 0 15px;
+    text-align: center;
+    border-radius: 30px;
+    line-height: 48px;
+    font-size: 1rem;
+    color: #fff;
+    text-shadow: none;
+    border: none;
+}
+.logincaps{
+    display: block;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    box-sizing: border-box;
+    padding: 2rem;
+}
+.logincaps .caps{
+    display: block;
+    text-align: center;
+    top: 50%;
+    transform: translate(0,-50%);
+    position: relative;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #414141;
+}
+.logincaps .caps span{
+    display: block;
+    font-size: 2rem;
+    color: #2264AF;
+    font-weight: 700;
+    font-family: "Roboto Condensed", Arial, Helvetica, sans-serif;
+}
+.expologo{
+    display: inline-block;
+    margin-top: 1rem;
+    text-align: center;
+    margin:0 auto;
+}
+.expologo img{
+    display: inline-block;
+    width: auto;
+    max-width: 100%;
+    height: auto;
+}
+.expotext{
+  display: block;
+  font-size: 1.2rem;
+  line-height: 1.6;
+  color: #000;
+  text-align: center;
+  font-weight: 600;
+  margin-top: 1rem;
+}
+.expotext a{
+  display: inline-block;
+  font-size: 1.2rem;
+  line-height: 1.6;
+  color: #AE1B2C;
+  font-weight: 600;
+}
+@media screen and (max-width:767px){
+    .form-main-sec{
+        margin-top:0 !important;
+    }
+    .loginmainbg{
+        padding:2rem 0;
+    }
+    .bgwhitebg .topbg{
+        padding: 1rem 1rem 0;
+    }
+    
+}

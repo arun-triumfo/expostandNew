@@ -1,0 +1,125 @@
+.form-main-sec {
+  background: #f3f3f3;
+  width: 100%;
+  padding: 90px 0px;
+}
+.form-main-sec .form-inner {
+  margin: 0px auto;
+  border-radius: 40px;
+  background: #fff;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1); max-width:680px;
+}
+
+
+.iti.iti--allow-dropdown.iti--separate-dial-code {
+  width: 100%;
+  margin-top: 12px;
+}
+
+.iti--separate-dial-code .iti__selected-flag{  background:none !important; }
+.form-main-sec .form-inner ul {
+  flex-wrap: wrap;
+}
+
+.form-main-sec .form-inner .complete-icons {
+  text-align: center;
+  /* margin: 10px 0px; */
+  padding: 20px 0px 0px;
+}
+
+
+.form-main-sec .form-inner .complete-icons img{  width:8%; }
+.form-main-sec .form-inner ul li .figure {
+  max-width: 100%;
+  border-radius: 10px 10px 0 0px;
+  display: block;
+}
+.form-main-sec .form-inner ul li .figure img {
+  width: 100%;
+  max-width: 100%;
+}
+
+.form-main-sec .form-inner ul li {
+  flex: 0 0 50%;
+  border-radius: 10px 10px 0 0px;
+}
+.form-main-sec .form-inner ul li .form-cont {
+  padding: 30px 50px;
+}
+
+.form-main-sec .form-inner ul li .form-cont h2 {
+  font-size: 30px;
+  color: #121110;
+  text-transform: uppercase;
+  padding: 10px 0px;
+  text-align: center;
+}
+.form-main-sec .form-inner ul li .form-cont input {
+  padding: 10px 25px;
+  margin-top: 13px;
+  font-size: 16px;
+  outline: none;
+  color: #535353;
+  border-radius: 50px;
+  border: 1px solid #f3f3f3;
+  background: #f3f3f3;
+  height: 60px;
+  width: 100%;
+}
+
+.form-main-sec .form-inner ul li .form-cont .check-box-main {
+  display: flex;
+}
+
+.form-main-sec .form-inner ul li .form-cont .check {
+  width: 20px;
+  height: 30px;
+}
+.form-main-sec .form-inner ul li .form-cont .check input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  margin-top: 0;
+  border: 1px solid #f5f5f5;
+  background-color: #f5f5f5;
+  position: absolute;
+  margin-left: -22px;
+  top: 26px;
+  left: 50px;
+}
+
+.form-main-sec .form-inner ul li .form-cont select {
+  padding: 10px 25px;
+  margin-top: 20px;
+  font-size: 16px;
+  outline: none;
+  color: #aaa1a1;
+  border-radius: 50px;
+  border: 1px solid #f3f3f3;
+  background: #f3f3f3;
+  height: 58px;
+  width: 100%;
+}
+
+.form-main-sec .form-inner ul li .form-cont p {
+  font-size: 16px;
+  text-align: revert;
+  color: #535353;
+  font-weight: 400;
+  padding-top: 20px;
+  padding-left: 24px;
+}
+
+.form-main-sec .form-inner ul li .form-cont input[type="submit"] {
+  margin-bottom: 10px;
+  margin-top: 30px;
+  width: 200px;
+  background: #b50728;
+  border-radius: 30px;
+  padding: 8px;
+  color: #fff;
+  font-size: 18px;
+  text-align: center;
+  outline: none;
+  border: none !important;
+  margin-left: 20px;
+}
