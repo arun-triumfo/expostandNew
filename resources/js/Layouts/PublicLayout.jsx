@@ -1,7 +1,9 @@
 import { Head, Link } from '@inertiajs/react';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function PublicLayout({ children }) {
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
     useEffect(() => {
         const id = 'gtm-expostandzone';
         if (document.getElementById(id)) {
@@ -21,6 +23,11 @@ export default function PublicLayout({ children }) {
         gtag('config', 'GTM-MCNN97H');
     }, []);
 
+    useEffect(() => {
+        document.body.classList.toggle('mobile-nav-open', mobileMenuOpen);
+        return () => document.body.classList.remove('mobile-nav-open');
+    }, [mobileMenuOpen]);
+
     return (
         <div id="legacy-root" className="legacy-root">
             <Head />
@@ -39,6 +46,17 @@ export default function PublicLayout({ children }) {
                             />
                         </Link>
                     </div>
+                    <button
+                        type="button"
+                        className={`public-mobile-toggle ${mobileMenuOpen ? 'is-open' : ''}`}
+                        aria-expanded={mobileMenuOpen}
+                        aria-label="Toggle menu"
+                        onClick={() => setMobileMenuOpen((s) => !s)}
+                    >
+                        <span />
+                        <span />
+                        <span />
+                    </button>
                     <div className="infocontainer">
                         <div className="phonecontainer">
                             <ul>
@@ -49,10 +67,10 @@ export default function PublicLayout({ children }) {
                                 </li>
                             </ul>
                         </div>
-                        <div className="loginbtnbg">
+                        <div className={`loginbtnbg public-mobile-nav ${mobileMenuOpen ? 'is-open' : ''}`}>
                             <ul>
                                 <li>
-                                    <Link href="/login">
+                                    <Link href="/login" onClick={() => setMobileMenuOpen(false)}>
                                         Login{' '}
                                         <span>
                                             <img
@@ -67,7 +85,7 @@ export default function PublicLayout({ children }) {
                                     </Link>
                                 </li>
                                 <li className="mobilenone">
-                                    <Link href="/register">
+                                    <Link href="/register" onClick={() => setMobileMenuOpen(false)}>
                                         Register{' '}
                                         <span>
                                             <img
@@ -82,7 +100,7 @@ export default function PublicLayout({ children }) {
                                     </Link>
                                 </li>
                                 <li className="web-view">
-                                    <a href="/getquote" className="getquotebtn">
+                                    <a href="/getquote" className="getquotebtn" onClick={() => setMobileMenuOpen(false)}>
                                         GET FREE QUOTE{' '}
                                         <span>
                                             <img
@@ -100,6 +118,7 @@ export default function PublicLayout({ children }) {
                                         className="btn btn-success"
                                         target="_blank"
                                         rel="noreferrer"
+                                        onClick={() => setMobileMenuOpen(false)}
                                     >
                                         <i className="fa fa-whatsapp" /> Chat on WhatsApp
                                     </a>
@@ -115,7 +134,7 @@ export default function PublicLayout({ children }) {
                     <div className="container">
                         <ul>
                             <li>
-                                <Link href="/">Home</Link>
+                                <Link href="/" onClick={() => setMobileMenuOpen(false)}>Home</Link>
                             </li>
                             <li>
                                 <a href="/about-us">About Us</a>

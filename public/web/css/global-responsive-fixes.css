@@ -1,0 +1,215 @@
+/* Global responsive fixes for public pages */
+
+:root {
+    --mobile-break-sm: 20rem;   /* 320px */
+    --mobile-break-md: 30rem;   /* 480px */
+    --tablet-break: 48rem;      /* 768px */
+    --desktop-break: 64rem;     /* 1024px */
+}
+
+html,
+body {
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+*,
+*::before,
+*::after {
+    min-width: 0;
+}
+
+img,
+video,
+iframe {
+    max-width: 100%;
+    height: auto;
+}
+
+table {
+    width: 100%;
+    display: block;
+    overflow-x: auto;
+}
+
+.container,
+.container-fluid {
+    width: min(100%, 75rem);
+}
+
+/* Typography scaling for readability */
+h1,
+.h1,
+.hometitle {
+    font-size: clamp(1.5rem, 2.5vw + 0.7rem, 2.7rem);
+    line-height: 1.2;
+}
+
+h2,
+.h2 {
+    font-size: clamp(1.2rem, 1.6vw + 0.8rem, 2rem);
+}
+
+p,
+li,
+a,
+input,
+button,
+textarea,
+select {
+    font-size: clamp(0.95rem, 0.25vw + 0.88rem, 1rem);
+}
+
+/* Shared grid/flex behavior for card/list wrappers */
+.row {
+    --bs-gutter-x: 1rem;
+    --bs-gutter-y: 1rem;
+}
+
+.standbuildercountry .row,
+.blog-main .blog-inner ul,
+.event-box ul,
+.city-box ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.9rem;
+}
+
+/* Mobile navigation behavior */
+.public-mobile-toggle {
+    display: none;
+    border: 0;
+    background: transparent;
+    padding: 0.35rem;
+    margin-left: auto;
+}
+
+.public-mobile-toggle span {
+    display: block;
+    width: 1.5rem;
+    height: 2px;
+    background: #fff;
+    margin: 0.25rem 0;
+    transition: 0.2s ease;
+}
+
+.public-mobile-toggle.is-open span:nth-child(1) {
+    transform: translateY(6px) rotate(45deg);
+}
+
+.public-mobile-toggle.is-open span:nth-child(2) {
+    opacity: 0;
+}
+
+.public-mobile-toggle.is-open span:nth-child(3) {
+    transform: translateY(-6px) rotate(-45deg);
+}
+
+@media (max-width: 64rem) {
+    .topheader .container {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .logo {
+        width: clamp(7rem, 18vw, 11rem);
+        margin: 0;
+        float: none;
+    }
+
+    .infocontainer {
+        margin-left: auto;
+        float: none;
+    }
+}
+
+@media (max-width: 48rem) {
+    .public-mobile-toggle {
+        display: inline-flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .topheader {
+        padding: 0.35rem 0;
+    }
+
+    .phonecontainer {
+        display: none !important;
+    }
+
+    .public-mobile-nav {
+        position: fixed;
+        top: 4.1rem;
+        right: 0.75rem;
+        left: 0.75rem;
+        background: #343642;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 0.75rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.28);
+        padding: 0.6rem;
+        display: none;
+        z-index: 1000;
+    }
+
+    .public-mobile-nav.is-open {
+        display: block;
+    }
+
+    .public-mobile-nav ul {
+        display: grid;
+        gap: 0.45rem;
+    }
+
+    .public-mobile-nav ul li {
+        width: 100%;
+        border: 0 !important;
+    }
+
+    .public-mobile-nav ul li a,
+    .public-mobile-nav .getquotebtn {
+        display: block;
+        width: 100%;
+        line-height: 1.35;
+        padding: 0.6rem 0.75rem;
+        border-radius: 0.5rem;
+        text-align: left;
+    }
+
+    .public-mobile-nav .getquotebtn {
+        background: #ae1b2c;
+    }
+
+    .footertop ul,
+    .bottommenu ul {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.4rem 0.9rem;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 30rem) {
+    .container,
+    .container-fluid {
+        padding-left: 0.75rem;
+        padding-right: 0.75rem;
+    }
+
+    .footertop ul,
+    .bottommenu ul {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 20rem) {
+    .logo {
+        width: 6.2rem;
+    }
+
+    .public-mobile-nav {
+        top: 3.8rem;
+    }
+}
