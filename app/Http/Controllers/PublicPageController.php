@@ -8,12 +8,99 @@ use App\Models\CountryTable;
 use App\Models\StandbuilderMaster;
 use App\Models\TradeshowData;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class PublicPageController extends Controller
 {
+    public function submitCountryQuote(Request $request)
+    {
+        // Public country-page lead form validation (legacy-compatible fields).
+        $validated = $request->validate([
+            'country_value' => ['required', 'string', 'max:255'],
+            'eventname' => ['required', 'string', 'max:255'],
+            'eventcity' => ['required', 'string', 'max:255'],
+            'boothsize' => ['required', 'string', 'max:50'],
+            'boothtype' => ['required', 'in:SQMT,SQFT'],
+            'information' => ['nullable', 'string', 'max:5000'],
+            'fullname' => ['required', 'string', 'min:2', 'max:255'],
+            'emailid' => ['required', 'email', 'max:255'],
+            'phonenumber' => ['required', 'string', 'min:7', 'max:30'],
+            'compwebsite' => ['required', 'string', 'max:255'],
+            'privacy_accepted' => ['accepted'],
+            'uploadfile' => ['nullable', 'file', 'mimes:jpg,jpeg,png,webp,pdf,doc,docx', 'max:10240'],
+            'honeypot' => ['nullable', 'string', 'max:0'],
+            'pageurl' => ['nullable', 'string', 'max:1000'],
+            'ipaddress' => ['nullable', 'string', 'max:100'],
+        ]);
+
+        $country = CountryTable::query()->where('value', $validated['country_value'])->first();
+        if (! $country) {
+            return back()->withErrors(['eventcity' => 'Invalid country selected.'])->withInput();
+        }
+
+        $blockedDomains = ['protonmail.com'];
+        if (Str::endsWith(strtolower($validated['emailid']), $blockedDomains)) {
+            return back()->withErrors(['emailid' => 'Please use a business email address.'])->withInput();
+        }
+
+        $blockedIPs = ['193.118.55.81', '41.77.117.3', '91.90.126.56'];
+        $requestIp = (string) ($validated['ipaddress'] ?? $request->ip() ?? '');
+        if (in_array($requestIp, $blockedIPs, true)) {
+            return back()->withErrors(['eventname' => 'Could not process request.'])->withInput();
+        }
+
+        $uploadName = '';
+        if ($request->hasFile('uploadfile')) {
+            $file = $request->file('uploadfile');
+            $uploadName = time().'_'.preg_replace('/[^a-zA-Z0-9._-]/', '', (string) $file->getClientOriginalName());
+            $file->move(base_path().'/public/uploads/getfivequote', $uploadName);
+        }
+
+        $cityId = $this->resolveCityId($country->id, $validated['eventcity']);
+        $quoteMobile = trim((string) ($request->input('phone_full') ?: $validated['phonenumber']));
+
+        // Store lead in legacy quotations table used by admin workflows.
+        $inserted = DB::table('getfivequotes')->insertGetId([
+            'quote_name' => trim((string) $validated['fullname']),
+            'quote_email' => trim((string) $validated['emailid']),
+            'quote_mobile' => $quoteMobile,
+            'quote_event_name' => trim((string) $validated['eventname']),
+            'quote_event_country' => (string) $country->id,
+            'quote_event_city' => $cityId ? (string) $cityId : '',
+            'quote_event_desc' => trim((string) ($validated['information'] ?? '')),
+            'quote_stand_area' => trim((string) $validated['boothsize']),
+            'quote_area_type' => trim((string) $validated['boothtype']),
+            'quote_attached_file' => $uploadName,
+            'status' => 'Pending',
+            'stage' => '1',
+            'quote_user_ip' => $requestIp,
+            'is_featured' => '0',
+            'company_website' => trim((string) $validated['compwebsite']),
+            'source' => 'Direct',
+            'page_url' => (string) ($validated['pageurl'] ?? $request->getRequestUri()),
+            'ipaddress' => $requestIp,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        if (! $inserted) {
+            return back()->withErrors(['eventname' => 'Could not submit your request. Please try again.'])->withInput();
+        }
+
+        DB::table('getfivequotes')->where('id', $inserted)->update([
+            'quote_token_no' => '#'.$inserted,
+            'updated_at' => now(),
+        ]);
+
+        Log::info('Public country quote submitted', ['id' => $inserted, 'country' => $country->value]);
+
+        return back()->with('success', 'Thank you! Your requirement has been submitted successfully.');
+    }
+
     public function blogIndex(): Response
     {
         $blogs = Article::query()
@@ -161,14 +248,7 @@ class PublicPageController extends Controller
             ->values();
 
         $citySelectedIds = array_values(array_filter(array_map('intval', explode(',', (string) ($cityRow->show_standbuilder_ids ?? '')))));
-        $standbuilders = empty($citySelectedIds)
-            ? $this->standbuildersBaseQuery()
-                ->where('standbuildermasters.cityname', $cityRow->name)
-                ->limit(24)
-                ->get()
-                ->map(fn ($r) => $this->mapStandbuilderCard($r))
-                ->values()
-            : $this->selectedStandbuilders($citySelectedIds);
+        $standbuilders = $this->selectedStandbuilders($citySelectedIds);
 
         return Inertia::render('Public/City/Show', [
             'country' => [
@@ -201,12 +281,8 @@ class PublicPageController extends Controller
                 ->map(fn ($r) => ['name' => (string) $r->name, 'value' => (string) $r->value])
                 ->values();
 
-            $standbuilders = $this->standbuildersBaseQuery()
-                ->where('standbuildermasters.countryname', $country->name);
             $countrySelectedIds = array_values(array_filter(array_map('intval', explode(',', (string) ($country->show_standbuilder_ids ?? '')))));
-            $standbuilders = empty($countrySelectedIds)
-                ? $standbuilders->limit(24)->get()->map(fn ($r) => $this->mapStandbuilderCard($r))->values()
-                : $this->selectedStandbuilders($countrySelectedIds);
+            $standbuilders = $this->selectedStandbuilders($countrySelectedIds);
 
             return Inertia::render('Public/Country/Show', [
                 'country' => [
@@ -238,6 +314,7 @@ class PublicPageController extends Controller
 
         $servicesMap = DB::table('servicemasters')->where('status', '1')->pluck('name', 'id');
         $countryMap = CountryTable::query()->where('status', '1')->pluck('name', 'id');
+        $countryValueByName = CountryTable::query()->pluck('value', 'name');
 
         $serviceIds = array_filter(array_map('intval', explode(',', (string) ($provider->servic_id ?? ''))));
         $scopeIds = array_filter(array_map('intval', explode(',', (string) ($provider->busn_scop_country ?? ''))));
@@ -259,6 +336,7 @@ class PublicPageController extends Controller
                 'metadesc' => (string) ($provider->metadesc ?? ''),
                 'email' => (string) ($provider->email ?? ''),
                 'phone' => (string) ($provider->phone ?? ''),
+                'country_value' => (string) ($countryValueByName[$provider->countryname] ?? ''),
                 'services' => collect($serviceIds)->map(fn ($id) => $servicesMap[$id] ?? null)->filter()->values(),
                 'business_scope_countries' => collect($scopeIds)->map(fn ($id) => $countryMap[$id] ?? null)->filter()->values(),
             ],
@@ -322,6 +400,29 @@ class PublicPageController extends Controller
             ->get()
             ->map(fn ($r) => $this->mapStandbuilderCard($r))
             ->values();
+    }
+
+    private function resolveCityId(int $countryId, string $eventCity): ?int
+    {
+        $eventCity = trim($eventCity);
+        if ($eventCity === '') {
+            return null;
+        }
+
+        $bySlug = CityTable::query()
+            ->where('countryid', $countryId)
+            ->where('value', $eventCity)
+            ->value('id');
+        if ($bySlug) {
+            return (int) $bySlug;
+        }
+
+        $byName = CityTable::query()
+            ->where('countryid', $countryId)
+            ->whereRaw('LOWER(name) = ?', [strtolower($eventCity)])
+            ->value('id');
+
+        return $byName ? (int) $byName : null;
     }
 }
 

@@ -182,6 +182,7 @@ Route::get('/blog', [PublicPageController::class, 'blogIndex'])->name('blog.inde
 Route::get('/blog/{slug}', [PublicPageController::class, 'blogShow'])->name('blog.show');
 Route::get('/trade-shows', [PublicPageController::class, 'tradeShows'])->name('trade-shows.index');
 Route::get('/trade-shows/{slug}', [PublicPageController::class, 'tradeShowDetail'])->name('trade-shows.show');
+Route::post('/country-quote', [PublicPageController::class, 'submitCountryQuote'])->name('public.country.quote');
 Route::get('/{country}/{city}', [PublicPageController::class, 'cityPage'])
     ->where('country', '^(?!blog$|trade-shows$|admin$|expo-admin$|login$|register$|dashboard$|profile$|welcome-breeze$).+')
     ->name('public.city');

@@ -8,9 +8,10 @@ const selectStyles = {
         ...base,
         border: '1px solid #E9ECEF',
         background: '#f3f3f3',
-        minHeight: 46,
+        minHeight: 54,
         borderRadius: '40px 0 0 40px',
         boxShadow: 'none',
+        paddingLeft: 6,
         '&:hover': { borderColor: '#E9ECEF' },
     }),
     singleValue: (base) => ({
@@ -19,13 +20,15 @@ const selectStyles = {
         lineHeight: '46px',
     }),
     placeholder: (base) => ({ ...base, color: '#757585' }),
-    menu: (base) => ({ ...base, zIndex: 20 }),
-    menuList: (base) => ({ ...base, maxHeight: 320, paddingTop: 0, paddingBottom: 0 }),
+    menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+    menu: (base) => ({ ...base, zIndex: 9999, borderRadius: 12, overflow: 'hidden', marginTop: 8 }),
+    menuList: (base) => ({ ...base, maxHeight: 320, paddingTop: 6, paddingBottom: 6 }),
     option: (base, state) => ({
         ...base,
         backgroundColor: state.isFocused ? '#A7262F' : 'white',
         color: state.isFocused ? 'white' : '#333',
         fontSize: '16px',
+        padding: '10px 16px',
     }),
 };
 
@@ -156,8 +159,11 @@ export default function Home({ countrydata = [], citydata = [], appUrl }) {
                                         isClearable
                                         isSearchable
                                         classNamePrefix="expo-city"
+                                        className="home-city-select"
                                         styles={selectStyles}
                                         onChange={(opt) => setCityValue(opt ? opt.value : '')}
+                                        menuPortalTarget={typeof document !== 'undefined' ? document.body : null}
+                                        menuPosition="fixed"
                                     />
                                     <input type="submit" name="submit" value="SEARCH" />
                                 </form>

@@ -213,3 +213,185 @@ select {
         top: 3.8rem;
     }
 }
+
+/* Country page polish without structural changes */
+.newformbg {
+    border-radius: 0.9rem;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(174, 27, 44, 0.12);
+}
+
+.newformbg h2 {
+    line-height: 1.35;
+    letter-spacing: 0.01em;
+}
+
+.fom-right .event-details {
+    margin-bottom: 1.15rem;
+}
+
+.fom-right .event-details h3 {
+    font-size: 1.06rem;
+    font-weight: 700;
+    color: #232323;
+    margin-bottom: 0.6rem;
+}
+
+.fom-right .input-outer input,
+.fom-right .input-outer select,
+.fom-right textarea,
+.fom-right select {
+    border-radius: 0.65rem;
+    border: 1px solid #d7dbe1;
+    padding: 0.78rem 0.9rem;
+    transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.fom-right .input-outer input:focus,
+.fom-right textarea:focus,
+.fom-right select:focus {
+    outline: none;
+    border-color: #ae1b2c;
+    box-shadow: 0 0 0 3px rgba(174, 27, 44, 0.15);
+}
+
+.fom-right .btn.btn-danger {
+    border-radius: 999px;
+    padding: 0.74rem 1.6rem;
+    font-weight: 600;
+    box-shadow: 0 8px 18px rgba(174, 27, 44, 0.28);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+}
+
+.fom-right .btn.btn-danger:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 22px rgba(174, 27, 44, 0.32);
+}
+
+.fom-right .btn.btn-danger:active {
+    transform: translateY(0);
+}
+
+.fom-right .error {
+    color: #c62828;
+    font-size: 0.82rem;
+    margin-top: 0.3rem;
+}
+
+.standbuildercountry .card {
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.standbuildercountry .card:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 14px 32px rgba(0, 0, 0, 0.12) !important;
+}
+
+.standbuildercountry a.d-block:hover {
+    text-decoration: none;
+}
+
+/* Home banner search alignment and dropdown spacing fixes */
+.searchbg {
+    padding: 0.35rem;
+    border-radius: 999px;
+    overflow: visible;
+}
+
+.searchbg form {
+    display: flex;
+    align-items: stretch;
+    justify-content: space-between;
+    gap: 0;
+}
+
+.searchbg .home-city-select {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.searchbg input[type='submit'],
+.searchbg button[type='submit'] {
+    flex: 0 0 170px;
+    max-width: 170px;
+    margin-left: 0 !important;
+    border-radius: 999px;
+    align-self: stretch;
+}
+
+.expo-city__menu {
+    margin-top: 0.45rem !important;
+    border-radius: 0.8rem !important;
+    border: 1px solid #e9ecef;
+    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.16) !important;
+}
+
+.expo-city__menu-list {
+    padding: 0.35rem 0 !important;
+}
+
+.expo-city__option {
+    line-height: 1.35;
+}
+
+@media (max-width: 48rem) {
+    .searchbg input[type='submit'],
+    .searchbg button[type='submit'] {
+        flex-basis: 145px;
+        max-width: 145px;
+    }
+}
+
+@media (max-width: 30rem) {
+    .searchbg {
+        border-radius: 1rem;
+        padding: 0.4rem;
+    }
+
+    .searchbg form {
+        flex-direction: column;
+        gap: 0.45rem;
+    }
+
+    .searchbg input[type='submit'],
+    .searchbg button[type='submit'] {
+        flex: 1 1 auto;
+        max-width: 100%;
+        width: 100%;
+        min-height: 2.8rem;
+        border-radius: 0.75rem;
+    }
+}
+
+/* Match live typography tone (country/city pages) */
+.mainbanner .hometitle,
+.city-box h3,
+.newformbg h2 {
+    font-family: "Roboto Condensed", Arial, Helvetica, sans-serif;
+    color: #222;
+    letter-spacing: 0.01em;
+}
+
+.mainbanner .hometitle {
+    color: #fff;
+    font-weight: 700;
+}
+
+.mainbanner p,
+.short-bio p,
+.standbuildercountry .card p,
+.services-area ul li a,
+.newformbg .form-inner input,
+.newformbg .form-inner textarea,
+.newformbg .form-inner select {
+    font-family: "Poppins", Arial, Helvetica, sans-serif;
+    color: #3c3c3c;
+    font-weight: 400;
+}
+
+.standbuildercountry .card h3,
+.standbuildercountry .card .h5 {
+    font-family: "Poppins", Arial, Helvetica, sans-serif;
+    color: #1f1f1f;
+    font-weight: 600 !important;
+}
