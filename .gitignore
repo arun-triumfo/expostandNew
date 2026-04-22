@@ -23,3 +23,5 @@ Homestead.yaml
 Thumbs.db
 /public/uploads
 /public/web/images
+/zip
+any zip files should be ignored in the root directory   
