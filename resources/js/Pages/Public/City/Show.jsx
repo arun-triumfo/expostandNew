@@ -68,8 +68,6 @@ export default function Show({ country, city, nearbyCities = [], standbuilders =
                 <title>{city?.metatitle || `Exhibition Stand Builders in ${city?.name}`}</title>
                 <meta name="description" content={city?.metadesc || `Find exhibition stand builders in ${city?.name}`} />
                 <link rel="canonical" href={`/${country?.value}/${city?.value}`} />
-                <link rel="stylesheet" type="text/css" href="/web/css/stand-builder-country.css?ver=1.0.8" />
-                <link rel="stylesheet" type="text/css" href="/web/css/responsive.css?ver=1.0.5" />
             </Head>
 
             <section>

@@ -117,8 +117,6 @@ export default function Show({ country, cities = [], standbuilders = [] }) {
                 <title>{title}</title>
                 <meta name="description" content={description} />
                 <link rel="canonical" href={`/${country?.value}`} />
-                <link rel="stylesheet" type="text/css" href="/web/css/stand-builder-country.css?ver=1.0.8" />
-                <link rel="stylesheet" type="text/css" href="/web/css/responsive.css?ver=1.0.5" />
             </Head>
 
             <section>

@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -95,6 +96,42 @@ class PublicPageController extends Controller
             'quote_token_no' => '#'.$inserted,
             'updated_at' => now(),
         ]);
+
+        try {
+            $cityName = '';
+            if ($cityId) {
+                $cityName = (string) (CityTable::query()->where('id', $cityId)->value('name') ?? '');
+            } elseif (!empty($validated['eventcity'])) {
+                $cityName = (string) $validated['eventcity'];
+            }
+
+            $resleaddetail = [[
+                'quote_token_no' => '#'.$inserted,
+                'quote_event_name' => (string) $validated['eventname'],
+                'quote_event_city' => $cityName,
+                'quote_stand_area' => (string) $validated['boothsize'],
+                'quote_area_type' => (string) $validated['boothtype'],
+                'quote_name' => (string) $validated['fullname'],
+                'quote_email' => (string) $validated['emailid'],
+                'quote_mobile' => $quoteMobile,
+                'company_website' => (string) $validated['compwebsite'],
+                'quote_event_desc' => (string) ($validated['information'] ?? ''),
+                'page_url' => (string) ($validated['pageurl'] ?? $request->getRequestUri()),
+                'ipaddress' => $requestIp,
+            ]];
+
+            Mail::send('emails.getfivequotemail', ['resleaddetail' => $resleaddetail], function ($message) {
+                $message->to('enquiry@expostandzone.com')
+                    ->bcc('marketing@expostandzone.com')
+                    ->bcc('php@triumfo.de')
+                    ->subject('Expostandzone.com | New Quotation Request');
+            });
+        } catch (\Throwable $e) {
+            Log::warning('Public quote email failed', [
+                'quote_id' => $inserted,
+                'error' => $e->getMessage(),
+            ]);
+        }
 
         Log::info('Public country quote submitted', ['id' => $inserted, 'country' => $country->value]);
 
