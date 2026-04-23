@@ -25,3 +25,4 @@ Thumbs.db
 /public/web/images
 *.zip
 public/*.zip
+public/uploads.zip

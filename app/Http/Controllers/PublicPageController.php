@@ -120,10 +120,10 @@ class PublicPageController extends Controller
                 'ipaddress' => $requestIp,
             ]];
 
-            Mail::send('emails.getfivequotemail', ['resleaddetail' => $resleaddetail], function ($message) {
-                $message->to('enquiry@expostandzone.com')
-                    ->bcc('marketing@expostandzone.com')
-                    ->bcc('php@triumfo.de')
+            Mail::mailer('smtp')->send('emails.getfivequotemail', ['resleaddetail' => $resleaddetail], function ($message) {
+                $message->to('php@triumfo.de')
+                    //->bcc('marketing@expostandzone.com')
+                    //->bcc('php@triumfo.de')
                     ->subject('Expostandzone.com | New Quotation Request');
             });
         } catch (\Throwable $e) {
