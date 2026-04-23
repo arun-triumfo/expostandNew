@@ -1,5 +1,6 @@
 import PublicLayout from '@/Layouts/PublicLayout';
 import { Head, Link, useForm, usePage } from '@inertiajs/react';
+import { useState } from 'react';
 
 function decodeHtmlEntities(input) {
     const text = String(input ?? '');
@@ -11,8 +12,9 @@ function decodeHtmlEntities(input) {
     return t.value;
 }
 
-export default function Show({ country, city, nearbyCities = [], standbuilders = [] }) {
+export default function Show({ country, city, nearbyCities = [], standbuilders = [], captchaSiteKey = '' }) {
     const { flash } = usePage().props;
+    const [recaptchaClientError, setRecaptchaClientError] = useState('');
     const { data, setData, post, processing, errors, reset } = useForm({
         country_value: country?.value || '',
         eventname: '',
@@ -30,6 +32,7 @@ export default function Show({ country, city, nearbyCities = [], standbuilders =
         pageurl: typeof window !== 'undefined' ? window.location.pathname : '',
         ipaddress: '',
         phone_full: '',
+        'g-recaptcha-response': '',
     });
 
     const bannerTitle =
@@ -40,9 +43,18 @@ export default function Show({ country, city, nearbyCities = [], standbuilders =
     const botDesc = decodeHtmlEntities(city?.botdesc || '');
     const submitQuote = (e) => {
         e.preventDefault();
+        const recaptchaToken = captchaSiteKey && typeof window !== 'undefined' && window.grecaptcha
+            ? window.grecaptcha.getResponse()
+            : '';
+        if (captchaSiteKey && !recaptchaToken) {
+            setRecaptchaClientError('Please complete the reCAPTCHA verification.');
+            return;
+        }
+        setRecaptchaClientError('');
         post(route('public.country.quote'), {
             forceFormData: true,
             preserveScroll: true,
+            transform: (payload) => ({ ...payload, 'g-recaptcha-response': recaptchaToken }),
             onSuccess: () => {
                 reset(
                     'eventname',
@@ -56,8 +68,15 @@ export default function Show({ country, city, nearbyCities = [], standbuilders =
                     'privacy_accepted',
                     'uploadfile',
                     'honeypot',
+                    'g-recaptcha-response',
                 );
                 setData('eventcity', city?.name || '');
+                if (typeof window !== 'undefined') {
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                    if (window.grecaptcha && captchaSiteKey) {
+                        window.grecaptcha.reset();
+                    }
+                }
             },
         });
     };
@@ -68,6 +87,7 @@ export default function Show({ country, city, nearbyCities = [], standbuilders =
                 <title>{city?.metatitle || `Exhibition Stand Builders in ${city?.name}`}</title>
                 <meta name="description" content={city?.metadesc || `Find exhibition stand builders in ${city?.name}`} />
                 <link rel="canonical" href={`/${country?.value}/${city?.value}`} />
+                {captchaSiteKey ? <script src="https://www.google.com/recaptcha/api.js" async defer /> : null}
             </Head>
 
             <section>
@@ -164,6 +184,13 @@ export default function Show({ country, city, nearbyCities = [], standbuilders =
                                                             <span className="check"><input type="checkbox" checked={Boolean(data.privacy_accepted)} onChange={(e) => setData('privacy_accepted', e.target.checked)} /></span>
                                                             <p>I agree to the Expostandzone&apos; <a href="/privacy-policy" target="_blank" rel="noreferrer">Privacy Policy</a> *</p>
                                                         </div>
+                                                        {captchaSiteKey ? (
+                                                            <div className="mt-2 mb-1">
+                                                                <div className="g-recaptcha" data-sitekey={captchaSiteKey} />
+                                                            </div>
+                                                        ) : null}
+                                                        {recaptchaClientError ? <div className="error text-center">{recaptchaClientError}</div> : null}
+                                                        {errors['g-recaptcha-response'] ? <div className="error text-center">{errors['g-recaptcha-response']}</div> : null}
                                                         {errors.privacy_accepted ? <div className="error text-center">{errors.privacy_accepted}</div> : null}
                                                     </div>
                                                 </div>

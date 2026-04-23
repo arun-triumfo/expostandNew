@@ -10,6 +10,7 @@ use App\Models\TradeshowData;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Inertia\Inertia;
@@ -19,6 +20,9 @@ class PublicPageController extends Controller
 {
     public function submitCountryQuote(Request $request)
     {
+        $recaptchaSiteKey = $this->recaptchaSiteKey();
+        $recaptchaSecret = $this->recaptchaSecret();
+
         // Public country-page lead form validation (legacy-compatible fields).
         $validated = $request->validate([
             'country_value' => ['required', 'string', 'max:255'],
@@ -36,7 +40,33 @@ class PublicPageController extends Controller
             'honeypot' => ['nullable', 'string', 'max:0'],
             'pageurl' => ['nullable', 'string', 'max:1000'],
             'ipaddress' => ['nullable', 'string', 'max:100'],
+            'g-recaptcha-response' => ['nullable', 'string'],
         ]);
+
+        if ($recaptchaSiteKey !== '' && $recaptchaSecret !== '') {
+            $token = trim((string) $request->input('g-recaptcha-response', ''));
+            if ($token === '') {
+                return back()->withErrors(['g-recaptcha-response' => 'Please complete the reCAPTCHA verification.'])->withInput();
+            }
+
+            try {
+                $verification = Http::asForm()
+                    ->timeout(10)
+                    ->post('https://www.google.com/recaptcha/api/siteverify', [
+                        'secret' => $recaptchaSecret,
+                        'response' => $token,
+                        'remoteip' => $request->ip(),
+                    ])
+                    ->json();
+
+                if (! (bool) data_get($verification, 'success', false)) {
+                    return back()->withErrors(['g-recaptcha-response' => 'reCAPTCHA verification failed. Please try again.'])->withInput();
+                }
+            } catch (\Throwable $e) {
+                Log::warning('reCAPTCHA verification failed', ['error' => $e->getMessage()]);
+                return back()->withErrors(['g-recaptcha-response' => 'reCAPTCHA service is unavailable. Please try again.'])->withInput();
+            }
+        }
 
         $country = CountryTable::query()->where('value', $validated['country_value'])->first();
         if (! $country) {
@@ -304,6 +334,7 @@ class PublicPageController extends Controller
             ],
             'nearbyCities' => $nearbyCities,
             'standbuilders' => $standbuilders,
+            'captchaSiteKey' => $this->recaptchaSiteKey(),
         ]);
     }
 
@@ -334,6 +365,7 @@ class PublicPageController extends Controller
                 ],
                 'cities' => $cities,
                 'standbuilders' => $standbuilders,
+                'captchaSiteKey' => $this->recaptchaSiteKey(),
             ]);
         }
 
@@ -377,7 +409,18 @@ class PublicPageController extends Controller
                 'services' => collect($serviceIds)->map(fn ($id) => $servicesMap[$id] ?? null)->filter()->values(),
                 'business_scope_countries' => collect($scopeIds)->map(fn ($id) => $countryMap[$id] ?? null)->filter()->values(),
             ],
+            'captchaSiteKey' => $this->recaptchaSiteKey(),
         ]);
+    }
+
+    private function recaptchaSiteKey(): string
+    {
+        return (string) (env('NOCAPTCHA_SITEKEY', env('RECAPTCHA_SITE_KEY', '')) ?: '');
+    }
+
+    private function recaptchaSecret(): string
+    {
+        return (string) (env('NOCAPTCHA_SECRET', env('RECAPTCHA_SECRET_KEY', '')) ?: '');
     }
 
     private function standbuildersBaseQuery()

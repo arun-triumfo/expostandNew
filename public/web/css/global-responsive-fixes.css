@@ -395,3 +395,42 @@ select {
     color: #1f1f1f;
     font-weight: 600 !important;
 }
+
+/* Keep public text tone dark like legacy site */
+.services-area ul li a,
+.services-area ul li,
+.short-bio p,
+.newformbg .form-inner input,
+.newformbg .form-inner textarea,
+.newformbg .form-inner select,
+.readyset-sect .fom-right input,
+.readyset-sect .fom-right textarea,
+.readyset-sect .fom-right select,
+.readyset-sect .fom-right p,
+.readyset-sect .fom-right .check-box-main p {
+    color: #000 !important;
+}
+
+/* Privacy checkbox visibility fix */
+.check-box-main {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.55rem;
+}
+
+.check-box-main .check {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.check-box-main .check input[type="checkbox"] {
+    width: 1.35rem;
+    height: 1.35rem;
+    margin: 0;
+    accent-color: #be0c30;
+    border-radius: 0.35rem;
+    border: 1px solid #8c8c8c;
+    cursor: pointer;
+}
