@@ -6,23 +6,34 @@
 
         <title inertia>{{ config('app.name', 'Laravel') }}</title>
 
-        <!-- Fonts -->
-        <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+        <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+        <link rel="dns-prefetch" href="//www.googletagmanager.com">
+        <link rel="preload" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" as="style">
+        <link rel="preload" href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@100..900&display=swap" as="style">
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@100..900&display=swap" rel="stylesheet">
 
-        <!-- Public critical styles loaded before React mount to prevent layout flash -->
+        <!-- Critical styles -->
         <link rel="stylesheet" type="text/css" href="/web/css/critical.css">
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
-        <link rel="stylesheet" type="text/css" href="/web/css/common.css?ver=1.0.7">
-        <link rel="stylesheet" type="text/css" href="/web/css/responsive.css?ver=1.0.5">
-        <link rel="stylesheet" type="text/css" href="/web/css/stand-builder-country.css?ver=1.0.8">
-        <link rel="stylesheet" type="text/css" href="/web/css/standbuilder-detail.css?ver=1.0.5">
-        <link rel="stylesheet" type="text/css" href="/web/css/global-responsive-fixes.css?ver=1.0.1">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link rel="preload" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <link rel="preload" href="/web/css/common.css?ver=1.0.7" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <link rel="preload" href="/web/css/responsive.css?ver=1.0.5" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <link rel="preload" href="/web/css/stand-builder-country.css?ver=1.0.8" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <link rel="preload" href="/web/css/standbuilder-detail.css?ver=1.0.5" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <link rel="preload" href="/web/css/global-responsive-fixes.css?ver=1.0.1" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript>
+            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+            <link rel="stylesheet" type="text/css" href="/web/css/common.css?ver=1.0.7">
+            <link rel="stylesheet" type="text/css" href="/web/css/responsive.css?ver=1.0.5">
+            <link rel="stylesheet" type="text/css" href="/web/css/stand-builder-country.css?ver=1.0.8">
+            <link rel="stylesheet" type="text/css" href="/web/css/standbuilder-detail.css?ver=1.0.5">
+            <link rel="stylesheet" type="text/css" href="/web/css/global-responsive-fixes.css?ver=1.0.1">
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        </noscript>
 
         <!-- Scripts -->
         @routes

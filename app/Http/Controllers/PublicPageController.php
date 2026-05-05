@@ -8,8 +8,10 @@ use App\Models\CountryTable;
 use App\Models\StandbuilderMaster;
 use App\Models\StandbuilderReview;
 use App\Models\TradeshowData;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
@@ -204,6 +206,7 @@ class PublicPageController extends Controller
                 'title' => (string) ($row->blog_tilte ?? ''),
                 'slug' => (string) ($row->url ?? ''),
                 'image' => (string) ($row->blog_img ?? ''),
+                'created_date' => (string) ($row->created_date ?? ''),
             ])
             ->values();
 
@@ -226,30 +229,32 @@ class PublicPageController extends Controller
     {
         $search = trim((string) $request->query('search', ''));
         $today = now()->toDateString();
+        $cacheKey = 'public:tradeshows:'.md5($search.'|'.(string) $request->query('page', 1));
+        $tradeshows = $this->rememberSafe($cacheKey, now()->addMinutes(10), function () use ($search, $today) {
+            $query = TradeshowData::query()
+                ->leftJoin('countrytables', 'tradeshow_data.fair_country', '=', 'countrytables.id')
+                ->leftJoin('citytables', 'tradeshow_data.fair_city', '=', 'citytables.id')
+                ->where('tradeshow_data.status', 'active')
+                ->where('tradeshow_data.fair_start_date', '>=', $today)
+                ->select(
+                    'tradeshow_data.id',
+                    'tradeshow_data.fair_name',
+                    'tradeshow_data.fair_logo',
+                    'tradeshow_data.logo_alt',
+                    'tradeshow_data.fair_start_date',
+                    'tradeshow_data.fair_end_date',
+                    'tradeshow_data.slug',
+                    'countrytables.name as countryname',
+                    'citytables.name as cityname'
+                )
+                ->orderBy('tradeshow_data.fair_start_date');
 
-        $query = TradeshowData::query()
-            ->leftJoin('countrytables', 'tradeshow_data.fair_country', '=', 'countrytables.id')
-            ->leftJoin('citytables', 'tradeshow_data.fair_city', '=', 'citytables.id')
-            ->where('tradeshow_data.status', 'active')
-            ->where('tradeshow_data.fair_start_date', '>=', $today)
-            ->select(
-                'tradeshow_data.id',
-                'tradeshow_data.fair_name',
-                'tradeshow_data.fair_logo',
-                'tradeshow_data.logo_alt',
-                'tradeshow_data.fair_start_date',
-                'tradeshow_data.fair_end_date',
-                'tradeshow_data.slug',
-                'countrytables.name as countryname',
-                'citytables.name as cityname'
-            )
-            ->orderBy('tradeshow_data.fair_start_date');
+            if ($search !== '') {
+                $query->where('tradeshow_data.fair_name', 'like', '%'.$search.'%');
+            }
 
-        if ($search !== '') {
-            $query->where('tradeshow_data.fair_name', 'like', '%'.$search.'%');
-        }
-
-        $tradeshows = $query->paginate(15)->withQueryString();
+            return $query->paginate(15)->withQueryString();
+        });
 
         return Inertia::render('Public/TradeShows/Index', [
             'tradeshows' => $tradeshows,
@@ -259,27 +264,29 @@ class PublicPageController extends Controller
 
     public function tradeShowDetail(string $slug): Response
     {
-        $row = TradeshowData::query()
-            ->leftJoin('countrytables', 'tradeshow_data.fair_country', '=', 'countrytables.id')
-            ->leftJoin('citytables', 'tradeshow_data.fair_city', '=', 'citytables.id')
-            ->select(
-                'tradeshow_data.id',
-                'tradeshow_data.fair_name',
-                'tradeshow_data.fair_logo',
-                'tradeshow_data.logo_alt',
-                'tradeshow_data.fair_start_date',
-                'tradeshow_data.fair_end_date',
-                'tradeshow_data.slug',
-                'tradeshow_data.meta_title',
-                'tradeshow_data.meta_desc',
-                'tradeshow_data.fair_details',
-                'tradeshow_data.fair_website',
-                'tradeshow_data.contact_email',
-                'countrytables.name as countryname',
-                'citytables.name as cityname'
-            )
-            ->where('tradeshow_data.slug', $slug)
-            ->firstOrFail();
+        $row = $this->rememberSafe('public:tradeshow:'.$slug, now()->addMinutes(15), function () use ($slug) {
+            return TradeshowData::query()
+                ->leftJoin('countrytables', 'tradeshow_data.fair_country', '=', 'countrytables.id')
+                ->leftJoin('citytables', 'tradeshow_data.fair_city', '=', 'citytables.id')
+                ->select(
+                    'tradeshow_data.id',
+                    'tradeshow_data.fair_name',
+                    'tradeshow_data.fair_logo',
+                    'tradeshow_data.logo_alt',
+                    'tradeshow_data.fair_start_date',
+                    'tradeshow_data.fair_end_date',
+                    'tradeshow_data.slug',
+                    'tradeshow_data.meta_title',
+                    'tradeshow_data.meta_desc',
+                    'tradeshow_data.fair_details',
+                    'tradeshow_data.fair_website',
+                    'tradeshow_data.contact_email',
+                    'countrytables.name as countryname',
+                    'citytables.name as cityname'
+                )
+                ->where('tradeshow_data.slug', $slug)
+                ->firstOrFail();
+        });
 
         return Inertia::render('Public/TradeShows/Show', [
             'tradeshow' => [
@@ -298,6 +305,7 @@ class PublicPageController extends Controller
                 'countryname' => (string) ($row->countryname ?? ''),
                 'cityname' => (string) ($row->cityname ?? ''),
             ],
+            'captchaSiteKey' => $this->recaptchaSiteKey(),
         ]);
     }
 
@@ -551,6 +559,23 @@ class PublicPageController extends Controller
             ->value('id');
 
         return $byName ? (int) $byName : null;
+    }
+
+    /**
+     * Fallback-safe cache remember for environments missing cache table.
+     */
+    private function rememberSafe(string $key, \DateTimeInterface|\DateInterval|int $ttl, callable $callback)
+    {
+        try {
+            return Cache::remember($key, $ttl, $callback);
+        } catch (QueryException $e) {
+            $message = strtolower($e->getMessage());
+            if (str_contains($message, 'table') && str_contains($message, 'cache')) {
+                return $callback();
+            }
+
+            throw $e;
+        }
     }
 }
 

@@ -1,38 +1,4 @@
-import PublicLayout from '@/Layouts/PublicLayout';
-import { Head, Link } from '@inertiajs/react';
-
-export default function Index({ blogs }) {
-    const rows = blogs?.data ?? [];
-    const paginationLinks = blogs?.links ?? [];
-    const heroImage = '/web/images/homebanner.webp';
-
-    const stripHtml = (value) => String(value || '').replace(/<[^>]*>/g, '').trim();
-    const excerptText = (value, maxLength = 60) => {
-        const clean = stripHtml(value);
-        if (clean.length <= maxLength) return clean;
-        return `${clean.slice(0, maxLength).trim()}...`;
-    };
-    const paginationLabel = (rawLabel) => {
-        const clean = stripHtml(rawLabel);
-        if (/previous|prev|laquo/i.test(clean)) return 'Prev';
-        if (/next|raquo/i.test(clean)) return 'Next';
-        return clean;
-    };
-    const categoryLabel = (row) => row?.category_name || row?.category || 'Insights';
-    const pageTitle = blogs?.title || 'Our Blog';
-
-    return (
-        <PublicLayout>
-            <Head>
-                <title>{`${pageTitle} | Expo Stand Zone`}</title>
-                <meta name="description" content="Latest exhibition, trade show, and booth design insights." />
-                <link rel="canonical" href="/blog" />
-                <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" />
-                <link rel="stylesheet" type="text/css" href="/web/css/common.css?ver=1.0.7" />
-                <link rel="stylesheet" type="text/css" href="/web/css/blog.css?ver=1.0.7" />
-            </Head>
-
-            <style>{`
+import{j as e,H as x,L as n}from"./app-D4Gq3OAH.js";import{P as h}from"./PublicLayout-CM3-X9pi.js";function u({blogs:r}){const o=r?.data??[],l=r?.links??[],d="/web/images/homebanner.webp",s=t=>String(t||"").replace(/<[^>]*>/g,"").trim(),g=(t,a=60)=>{const i=s(t);return i.length<=a?i:`${i.slice(0,a).trim()}...`},p=t=>{const a=s(t);return/previous|prev|laquo/i.test(a)?"Prev":/next|raquo/i.test(a)?"Next":a},b=t=>t?.category_name||t?.category||"Insights",c=r?.title||"Our Blog";return e.jsxs(h,{children:[e.jsxs(x,{children:[e.jsx("title",{children:`${c} | Expo Stand Zone`}),e.jsx("meta",{name:"description",content:"Latest exhibition, trade show, and booth design insights."}),e.jsx("link",{rel:"canonical",href:"/blog"}),e.jsx("link",{rel:"stylesheet",href:"https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"}),e.jsx("link",{rel:"stylesheet",type:"text/css",href:"/web/css/common.css?ver=1.0.7"}),e.jsx("link",{rel:"stylesheet",type:"text/css",href:"/web/css/blog.css?ver=1.0.7"})]}),e.jsx("style",{children:`
                 .blog-hero {
                     position: relative;
                     min-height: 280px;
@@ -41,7 +7,7 @@ export default function Index({ blogs }) {
                     justify-content: center;
                     color: #fff;
                     background: linear-gradient(120deg, rgba(11, 16, 28, 0.86), rgba(11, 16, 28, 0.74)),
-                        url('${heroImage}') center / cover no-repeat;
+                        url('${d}') center / cover no-repeat;
                     text-align: center;
                 }
                 .blog-hero::before {
@@ -236,99 +202,4 @@ export default function Index({ blogs }) {
                         font-size: 0.95rem;
                     }
                 }
-            `}</style>
-
-            <section className="blog-breadcrumb-strip">
-                <div className="container">
-                    <nav aria-label="breadcrumb">
-                        <div className="blog-breadcrumb">
-                            <Link href="/">Home</Link>
-                            <span>/</span>
-                            <span aria-current="page">Blog</span>
-                            {blogs?.current_page ? (
-                                <>
-                                    <span>/</span>
-                                    <span>Page</span>
-                                    <span>/</span>
-                                    <span aria-current="page">{blogs.current_page}</span>
-                                </>
-                            ) : null}
-                        </div>
-                    </nav>
-                </div>
-            </section>
-
-            <section className="blog-hero">
-                <div className="container">
-                    <div className="blog-hero-content">
-                        <h1 className="blog-hero-title">{pageTitle}</h1>
-                        <p className="blog-hero-subtitle">A Global Online Portal For Exhibitor, Supplier & Organizer.</p>
-                    </div>
-                </div>
-            </section>
-
-            <section className="blog-section">
-                <div className="blog-content-wrap">
-                    <div className="row">
-                        {rows.length === 0 ? (
-                            <div className="col-12">
-                                <div className="blog-empty">No blog posts available right now. Please check back soon.</div>
-                            </div>
-                        ) : (
-                            rows.map((row) => (
-                                <article key={row.id} className="col-xl-4 col-lg-4 col-md-6 col-12 mb-4">
-                                    <div className="blog-card">
-                                        {row.image ? (
-                                            <img
-                                                src={`/uploads/blog/${row.image}`}
-                                                alt={row.title}
-                                                className="blog-card-image"
-                                                loading="lazy"
-                                            />
-                                        ) : (
-                                            <div className="blog-card-image d-flex align-items-center justify-content-center text-muted">
-                                                No image
-                                            </div>
-                                        )}
-                                        <div className="card-body p-4 d-flex flex-column">
-                                            <span className="blog-category mb-3">{categoryLabel(row)}</span>
-                                            <h2 className="blog-title-clamp mb-2">{row.title}</h2>
-                                            <p className="blog-excerpt mb-4">{excerptText(row.description)}</p>
-                                            <div className="mt-auto">
-                                                <Link href={`/blog/${row.slug}`} className="btn btn-danger blog-read-btn">
-                                                    Read More
-                                                </Link>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </article>
-                            ))
-                        )}
-                    </div>
-
-                    {paginationLinks.length > 3 ? (
-                        <nav aria-label="Blog pagination" className="blog-pagination">
-                            {paginationLinks.map((link, index) => {
-                                const label = paginationLabel(link.label);
-                                return link.url ? (
-                                    <Link
-                                        key={`${label}-${index}`}
-                                        href={link.url}
-                                        className={`blog-pagination-link ${link.active ? 'active' : ''}`}
-                                    >
-                                        {label}
-                                    </Link>
-                                ) : (
-                                    <span key={`${label}-${index}`} className="blog-pagination-link" style={{ opacity: 0.45 }}>
-                                        {label}
-                                    </span>
-                                );
-                            })}
-                        </nav>
-                    ) : null}
-                </div>
-            </section>
-        </PublicLayout>
-    );
-}
-
+            `}),e.jsx("section",{className:"blog-breadcrumb-strip",children:e.jsx("div",{className:"container",children:e.jsx("nav",{"aria-label":"breadcrumb",children:e.jsxs("div",{className:"blog-breadcrumb",children:[e.jsx(n,{href:"/",children:"Home"}),e.jsx("span",{children:"/"}),e.jsx("span",{"aria-current":"page",children:"Blog"}),r?.current_page?e.jsxs(e.Fragment,{children:[e.jsx("span",{children:"/"}),e.jsx("span",{children:"Page"}),e.jsx("span",{children:"/"}),e.jsx("span",{"aria-current":"page",children:r.current_page})]}):null]})})})}),e.jsx("section",{className:"blog-hero",children:e.jsx("div",{className:"container",children:e.jsxs("div",{className:"blog-hero-content",children:[e.jsx("h1",{className:"blog-hero-title",children:c}),e.jsx("p",{className:"blog-hero-subtitle",children:"A Global Online Portal For Exhibitor, Supplier & Organizer."})]})})}),e.jsx("section",{className:"blog-section",children:e.jsxs("div",{className:"blog-content-wrap",children:[e.jsx("div",{className:"row",children:o.length===0?e.jsx("div",{className:"col-12",children:e.jsx("div",{className:"blog-empty",children:"No blog posts available right now. Please check back soon."})}):o.map(t=>e.jsx("article",{className:"col-xl-4 col-lg-4 col-md-6 col-12 mb-4",children:e.jsxs("div",{className:"blog-card",children:[t.image?e.jsx("img",{src:`/uploads/blog/${t.image}`,alt:t.title,className:"blog-card-image",loading:"lazy"}):e.jsx("div",{className:"blog-card-image d-flex align-items-center justify-content-center text-muted",children:"No image"}),e.jsxs("div",{className:"card-body p-4 d-flex flex-column",children:[e.jsx("span",{className:"blog-category mb-3",children:b(t)}),e.jsx("h2",{className:"blog-title-clamp mb-2",children:t.title}),e.jsx("p",{className:"blog-excerpt mb-4",children:g(t.description)}),e.jsx("div",{className:"mt-auto",children:e.jsx(n,{href:`/blog/${t.slug}`,className:"btn btn-danger blog-read-btn",children:"Read More"})})]})]})},t.id))}),l.length>3?e.jsx("nav",{"aria-label":"Blog pagination",className:"blog-pagination",children:l.map((t,a)=>{const i=p(t.label);return t.url?e.jsx(n,{href:t.url,className:`blog-pagination-link ${t.active?"active":""}`,children:i},`${i}-${a}`):e.jsx("span",{className:"blog-pagination-link",style:{opacity:.45},children:i},`${i}-${a}`)})}):null]})})]})}export{u as default};
