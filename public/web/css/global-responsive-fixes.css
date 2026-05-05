@@ -75,6 +75,23 @@ select {
     gap: 0.9rem;
 }
 
+.city-box ul li a.active {
+    background: #004063;
+    color: #fff !important;
+}
+
+.reviews .writereview .writereview-btn {
+    font: inherit;
+    text-decoration: underline;
+    color: #ae1b2c;
+    cursor: pointer;
+    background: none;
+}
+
+.reviews .writereview .writereview-btn:hover {
+    color: #004063;
+}
+
 /* Mobile navigation behavior */
 .public-mobile-toggle {
     display: none;
@@ -403,7 +420,7 @@ select {
 .newformbg .form-inner input,
 .newformbg .form-inner textarea,
 .newformbg .form-inner select,
-.readyset-sect .fom-right input,
+.readyset-sect .fom-right input:not([type="checkbox"]):not([type="file"]):not([type="submit"]),
 .readyset-sect .fom-right textarea,
 .readyset-sect .fom-right select,
 .readyset-sect .fom-right p,
@@ -423,6 +440,25 @@ select {
     display: inline-flex;
     align-items: center;
     justify-content: center;
+}
+
+/* Override .fom-right input (standbuilder-detail.css) so checkbox is not full-width / mis-styled */
+.readyset-sect .fom-right .check-box-main .check input[type="checkbox"] {
+    width: 1.35rem !important;
+    height: 1.35rem !important;
+    max-width: 1.35rem !important;
+    min-width: 1.35rem !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: 2px solid #5a5a5a !important;
+    border-radius: 0.35rem !important;
+    background: #fff !important;
+    box-sizing: border-box !important;
+    flex-shrink: 0;
+    accent-color: #ae1b2c;
+    cursor: pointer;
+    appearance: auto;
+    -webkit-appearance: auto;
 }
 
 .check-box-main .check input[type="checkbox"] {

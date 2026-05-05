@@ -6,6 +6,7 @@ use App\Models\Article;
 use App\Models\CityTable;
 use App\Models\CountryTable;
 use App\Models\StandbuilderMaster;
+use App\Models\StandbuilderReview;
 use App\Models\TradeshowData;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -388,8 +389,46 @@ class PublicPageController extends Controller
         $serviceIds = array_filter(array_map('intval', explode(',', (string) ($provider->servic_id ?? ''))));
         $scopeIds = array_filter(array_map('intval', explode(',', (string) ($provider->busn_scop_country ?? ''))));
 
+        $masterId = (int) $provider->id;
+        $userId = (int) ($provider->userid ?? 0);
+        $reviewScope = array_values(array_unique(array_filter([$masterId, $userId])));
+
+        $reviewRows = StandbuilderReview::query()
+            ->whereIn('standbuilder_id', $reviewScope)
+            ->where('is_verified', true)
+            ->where('is_approved', true)
+            ->orderByDesc('created_at')
+            ->orderByDesc('id')
+            ->get();
+
+        $avgDesign = (float) ($reviewRows->avg('design_rating') ?? 0);
+        $avgQuality = (float) ($reviewRows->avg('quality_rating') ?? 0);
+        $avgProject = (float) ($reviewRows->avg('project_rating') ?? 0);
+        $avgCost = (float) ($reviewRows->avg('cost_rating') ?? 0);
+        $overallRating = ($avgDesign + $avgQuality + $avgProject + $avgCost) / 4;
+
+        $reviewsPayload = $reviewRows->map(function ($r) {
+            $avg = ($r->design_rating + $r->quality_rating + $r->project_rating + $r->cost_rating) / 4;
+
+            return [
+                'id' => (int) $r->id,
+                'reviewer_name' => (string) $r->reviewer_name,
+                'review_title' => (string) $r->review_title,
+                'review_text' => (string) $r->review_text,
+                'design_rating' => (int) $r->design_rating,
+                'quality_rating' => (int) $r->quality_rating,
+                'project_rating' => (int) $r->project_rating,
+                'cost_rating' => (int) $r->cost_rating,
+                'average' => round($avg, 1),
+                'standbuilder_reply' => $r->standbuilder_reply ? (string) $r->standbuilder_reply : null,
+                'created_at' => $r->created_at ? $r->created_at->format('d/m/Y') : '',
+            ];
+        })->values();
+
         return Inertia::render('Public/StandBuilders/Show', [
             'standbuilder' => [
+                'id' => $masterId,
+                'userid' => $userId,
                 'companyname' => (string) ($provider->companyname ?? ''),
                 'slug' => (string) ($provider->slug ?? ''),
                 'complogo' => (string) ($provider->complogo ?? ''),
@@ -408,6 +447,15 @@ class PublicPageController extends Controller
                 'country_value' => (string) ($countryValueByName[$provider->countryname] ?? ''),
                 'services' => collect($serviceIds)->map(fn ($id) => $servicesMap[$id] ?? null)->filter()->values(),
                 'business_scope_countries' => collect($scopeIds)->map(fn ($id) => $countryMap[$id] ?? null)->filter()->values(),
+            ],
+            'reviews' => $reviewsPayload,
+            'reviewStats' => [
+                'count' => $reviewRows->count(),
+                'overall' => round($overallRating, 1),
+                'design' => round($avgDesign, 1),
+                'quality' => round($avgQuality, 1),
+                'project' => round($avgProject, 1),
+                'cost' => round($avgCost, 1),
             ],
             'captchaSiteKey' => $this->recaptchaSiteKey(),
         ]);

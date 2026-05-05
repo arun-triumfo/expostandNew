@@ -21,7 +21,7 @@
         <link rel="stylesheet" type="text/css" href="/web/css/responsive.css?ver=1.0.5">
         <link rel="stylesheet" type="text/css" href="/web/css/stand-builder-country.css?ver=1.0.8">
         <link rel="stylesheet" type="text/css" href="/web/css/standbuilder-detail.css?ver=1.0.5">
-        <link rel="stylesheet" type="text/css" href="/web/css/global-responsive-fixes.css?ver=1.0.0">
+        <link rel="stylesheet" type="text/css" href="/web/css/global-responsive-fixes.css?ver=1.0.1">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
         <!-- Scripts -->

@@ -1,0 +1,1 @@
+import{j as t}from"./app-Ctb13nU4.js";import o from"./CountryForm-C8SVGCK1.js";import"./AdminCKEditor4-B78tXVaR.js";import"./AdminSearchableSelect-BFdITNxM.js";import"./react-select.esm-5V2XWBS5.js";import"./AdminLayout-DsOhdjkq.js";function s(r){return t.jsx(o,{...r,country:null})}export{s as default};

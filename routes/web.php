@@ -13,6 +13,7 @@ use App\Http\Controllers\Admin\UserManagementController;
 use App\Http\Controllers\CitySearchController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PublicPageController;
+use App\Http\Controllers\StandbuilderReviewController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -183,6 +184,17 @@ Route::get('/blog/{slug}', [PublicPageController::class, 'blogShow'])->name('blo
 Route::get('/trade-shows', [PublicPageController::class, 'tradeShows'])->name('trade-shows.index');
 Route::get('/trade-shows/{slug}', [PublicPageController::class, 'tradeShowDetail'])->name('trade-shows.show');
 Route::post('/country-quote', [PublicPageController::class, 'submitCountryQuote'])->name('public.country.quote');
+
+Route::post('/review/submit', [StandbuilderReviewController::class, 'store'])->name('submit.review');
+Route::get('/review/verify/{token}', [StandbuilderReviewController::class, 'verify'])->name('review.verify');
+Route::get('/review/verification/success', [StandbuilderReviewController::class, 'verificationSuccess'])->name('review.verification.success');
+Route::get('/review/verification/failed', [StandbuilderReviewController::class, 'verificationFailed'])->name('review.verification.failed');
+Route::get('/api/check-review/{standbuilderId}/{reviewerEmail}', [StandbuilderReviewController::class, 'checkReview'])
+    ->where('reviewerEmail', '.*');
+Route::get('/review-guidelines', function () {
+    return view('review-guidelines');
+})->name('review.guidelines');
+
 Route::get('/{country}/{city}', [PublicPageController::class, 'cityPage'])
     ->where('country', '^(?!blog$|trade-shows$|admin$|expo-admin$|login$|register$|dashboard$|profile$|welcome-breeze$).+')
     ->name('public.city');
