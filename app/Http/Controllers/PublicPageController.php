@@ -225,6 +225,36 @@ class PublicPageController extends Controller
         ]);
     }
 
+    public function aboutUsPage(): Response
+    {
+        return Inertia::render('Public/Static/AboutUs');
+    }
+
+    public function privacyPolicyPage(): Response
+    {
+        return Inertia::render('Public/Static/PrivacyPolicy');
+    }
+
+    public function refundPolicyPage(): Response
+    {
+        return Inertia::render('Public/Static/RefundPolicy');
+    }
+
+    public function faqPage(): Response
+    {
+        return Inertia::render('Public/Static/Faq');
+    }
+
+    public function termsPage(): Response
+    {
+        return Inertia::render('Public/Static/Terms');
+    }
+
+    public function contactPage(): Response
+    {
+        return Inertia::render('Public/Static/ContactUs');
+    }
+
     public function tradeShows(Request $request): Response
     {
         $search = trim((string) $request->query('search', ''));

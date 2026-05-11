@@ -15,6 +15,46 @@ export default function Show({ blog, related = [] }) {
                 <link rel="stylesheet" type="text/css" href="/web/css/blog-details.css?ver=1.0.7" />
                 <link rel="stylesheet" type="text/css" href="/web/css/responsive.css?ver=1.0.5" />
             </Head>
+            <style>{`
+                .blog-detail-top-row {
+                    align-items: flex-start;
+                    position: relative;
+                }
+                .blog-detail-top-row .sub-ban-inner {
+                    width: 100%;
+                }
+                .blog-detail-top-row .sub-ban-inner img {
+                    width: 100%;
+                    display: block;
+                }
+                .blog-detail-form.fom-right {
+                    margin-top: 0 !important;
+                    position: relative;
+                    top: auto;
+                }
+                @media (min-width: 992px) {
+                    .blog-detail-top-row > .col-lg-8 {
+                        flex: 0 0 66.666667%;
+                        max-width: 66.666667%;
+                    }
+                    .blog-detail-top-row > .col-lg-4 {
+                        position: absolute;
+                        top: 0;
+                        right: 0;
+                        flex: 0 0 33.333333%;
+                        max-width: 33.333333%;
+                    }
+                    .blog-gray-sec { margin-top: 0; }
+                }
+                @media (max-width: 991.98px) {
+                    .blog-detail-top-row > .col-lg-4 {
+                        position: static;
+                    }
+                    .blog-gray-sec {
+                        margin-top: 0;
+                    }
+                }
+            `}</style>
 
             <section>
                 <div className="mainbanner">
@@ -30,14 +70,14 @@ export default function Show({ blog, related = [] }) {
             <section>
                 <div className="sub-banner">
                     <div className="container">
-                        <div className="row">
+                        <div className="row blog-detail-top-row">
                             <div className="col-lg-8">
                                 <div className="sub-ban-inner">
                                     {blog?.image ? <img src={`/uploads/blog/${blog.image}`} alt={blog.title} loading="lazy" /> : null}
                                 </div>
                             </div>
                             <div className="col-lg-4">
-                                <div className="fom-right">
+                                <div className="fom-right blog-detail-form">
                                     <div className="header-bx">Contact For Booth Design &amp; Fabrication Services</div>
                                     <h2>Event Details</h2>
                                     <div className="col-lg-12 col-md-12"><div className="input-outer"><input type="text" placeholder="Event Name" /></div></div>
@@ -108,7 +148,6 @@ export default function Show({ blog, related = [] }) {
                                                         ) : (
                                                             <p>{r.title}</p>
                                                         )}
-                                                        {r.created_date ? <span className="date">{r.created_date}</span> : null}
                                                     </Link>
                                                 </li>
                                             ))}

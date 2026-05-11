@@ -1,0 +1,1 @@
+import{j as r}from"./app-BESNPqnH.js";import t from"./BlogForm-BZ9lHFsa.js";import"./AdminCKEditor4-BQvjAwwN.js";import"./AdminImageUploadField-KAP-QQQT.js";import"./trash-2-DsZ04unM.js";import"./AdminLayout-YRIxG_4N.js";function n({blog:o}){return r.jsx(t,{blog:o})}export{n as default};

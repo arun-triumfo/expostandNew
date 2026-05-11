@@ -184,6 +184,12 @@ Route::get('/blog/{slug}', [PublicPageController::class, 'blogShow'])->name('blo
 Route::get('/trade-shows', [PublicPageController::class, 'tradeShows'])->name('trade-shows.index');
 Route::get('/trade-shows/{slug}', [PublicPageController::class, 'tradeShowDetail'])->name('trade-shows.show');
 Route::post('/country-quote', [PublicPageController::class, 'submitCountryQuote'])->name('public.country.quote');
+Route::get('/about-us', [PublicPageController::class, 'aboutUsPage'])->name('static.about-us');
+Route::get('/privacy-policy', [PublicPageController::class, 'privacyPolicyPage'])->name('static.privacy-policy');
+Route::get('/return-policy', [PublicPageController::class, 'refundPolicyPage'])->name('static.return-policy');
+Route::get('/faq', [PublicPageController::class, 'faqPage'])->name('static.faq');
+Route::get('/terms-and-condition', [PublicPageController::class, 'termsPage'])->name('static.terms');
+Route::get('/contact-us', [PublicPageController::class, 'contactPage'])->name('static.contact');
 
 Route::post('/review/submit', [StandbuilderReviewController::class, 'store'])->name('submit.review');
 Route::get('/review/verify/{token}', [StandbuilderReviewController::class, 'verify'])->name('review.verify');
@@ -196,8 +202,8 @@ Route::get('/review-guidelines', function () {
 })->name('review.guidelines');
 
 Route::get('/{country}/{city}', [PublicPageController::class, 'cityPage'])
-    ->where('country', '^(?!blog$|trade-shows$|admin$|expo-admin$|login$|register$|dashboard$|profile$|welcome-breeze$).+')
+    ->where('country', '^(?!blog$|trade-shows$|about-us$|privacy-policy$|return-policy$|faq$|terms-and-condition$|contact-us$|admin$|expo-admin$|login$|register$|dashboard$|profile$|welcome-breeze$).+')
     ->name('public.city');
 Route::get('/{slug}', [PublicPageController::class, 'countryOrProvider'])
-    ->where('slug', '^(?!blog$|trade-shows$|admin$|expo-admin$|login$|register$|dashboard$|profile$|welcome-breeze$).+')
+    ->where('slug', '^(?!blog$|trade-shows$|about-us$|privacy-policy$|return-policy$|faq$|terms-and-condition$|contact-us$|admin$|expo-admin$|login$|register$|dashboard$|profile$|welcome-breeze$).+')
     ->name('public.country-or-provider');
